@@ -66,7 +66,7 @@ const Footer = () => {
       
       <div className="container mt-8 pt-8 border-t border-muted-foreground/20">
         <p className="text-center text-muted-foreground text-sm">
-          &copy; {new Date().getFullYear()} Cargocept. All rights reserved.
+          <p>&copy; 2017 Cargocept. All rights reserved.</p>
         </p>
       </div>
     </footer>
