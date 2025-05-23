@@ -1,143 +1,129 @@
-
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
 import Layout from '@/components/layout/Layout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Package, Truck, Clock, Users, ArrowRight, Box, Shield, Globe, Plane, Ship, Train } from 'lucide-react';
-import { getServices } from '@/services/shipmentService';
+import { Package, Truck, Clock, Shield, Globe, Home } from 'lucide-react';
 
-const iconMapping: Record<string, React.ReactNode> = {
-  'Package': <Package className="h-10 w-10" />,
-  'Truck': <Truck className="h-10 w-10" />,
-  'Clock': <Clock className="h-10 w-10" />,
-  'Users': <Users className="h-10 w-10" />,
-  'Box': <Box className="h-10 w-10" />,
-  'Shield': <Shield className="h-10 w-10" />,
-  'Globe': <Globe className="h-10 w-10" />,
-  'Plane': <Plane className="h-10 w-10" />,
-  'Ship': <Ship className="h-10 w-10" />,
-  'Train': <Train className="h-10 w-10" />
-};
+const services = [
+  {
+    title: "Standard Shipping",
+    description: "Regular delivery within 5–7 business days.",
+    longDescription: "Perfect for everyday shipments that aren't time-sensitive. Our Standard Shipping offers a reliable and budget-friendly solution, ensuring your package arrives safely within a week. Includes basic tracking and delivery confirmation for peace of mind.",
+    icon: <Package className="h-10 w-10" />,
+    image: "/large-parcel-delivery-scaled.jpg.webp"
+  },
+  {
+    title: "Express Shipping",
+    description: "Fast delivery within 2–3 business days.",
+    longDescription: "Ideal for customers who need their packages delivered quickly. Express Shipping offers faster transit times with priority processing, ensuring your items reach their destination within 72 hours. Comes with real-time tracking and status updates.",
+    icon: <Truck className="h-10 w-10" />,
+    image: "/delivery logistics.webp"
+  },
+  {
+    title: "Premium Shipping",
+    description: "Priority handling with insurance and tracking.",
+    longDescription: "Designed for high-value or sensitive items, Premium Shipping offers enhanced care from pickup to delivery. It includes insurance coverage, detailed tracking, and priority support, making it ideal for urgent or important shipments.",
+    icon: <Shield className="h-10 w-10" />,
+    image: "/last-mile-delivery-logistics.jpg"
+  },
+  {
+    title: "International Shipping",
+    description: "Worldwide delivery with customs handling.",
+    longDescription: "Send your packages globally with ease. Our International Shipping covers customs documentation and clearance, offering dependable transit times and global tracking. Suitable for personal or commercial shipments across borders.",
+    icon: <Globe className="h-10 w-10" />,
+    image: "/how-e-logistics-is-improving-supply-chain-efficiency-1920x1274.jpg.webp"
+  },
+  {
+    title: "Door-to-Door International",
+    description: "Premium door-to-door delivery service for international shipments.",
+    longDescription: "Enjoy a seamless experience from pickup at your location to delivery at the recipient's address abroad. This service handles all logistics, including customs, taxes, and tracking, ensuring hassle-free global shipping.",
+    icon: <Home className="h-10 w-10" />,
+    image: "/set-of-delivery-logistics-delivery-process-to-customers-illustration-vector.jpg"
+  },
+  {
+    title: "Door-to-Door Domestic",
+    description: "Premium door-to-door delivery service for domestic shipments.",
+    longDescription: "Let us handle everything—pickup from your door, transportation, and final delivery anywhere in the country. It's the ultimate convenience for individuals and businesses needing efficient and secure local deliveries.",
+    icon: <Home className="h-10 w-10" />,
+    image: "/7-tips-for-managing-your-logistics-more-effectively.webp"
+  }
+];
 
 const Services = () => {
-  const { data: serviceDetails, isLoading } = useQuery({
-    queryKey: ['services'],
-    queryFn: getServices
-  });
-
-  const renderIcon = (iconName: string | null) => {
-    if (!iconName || !iconMapping[iconName]) {
-      return <Package className="h-10 w-10" />;
-    }
-    return iconMapping[iconName];
-  };
-
-  const additionalServices = [
-    {
-      title: "Air Freight",
-      description: "Expedited shipping via air cargo for time-sensitive deliveries with global coverage.",
-      icon: "Plane"
-    },
-    {
-      title: "Sea Freight",
-      description: "Cost-effective shipping solution for large volumes with comprehensive ocean freight services.",
-      icon: "Ship"
-    },
-    {
-      title: "Rail Transport",
-      description: "Eco-friendly logistics solution connecting major industrial hubs with reliable schedules.",
-      icon: "Train"
-    },
-    {
-      title: "Supply Chain Solutions",
-      description: "End-to-end supply chain management services tailored to your business requirements.",
-      icon: "Box"
-    },
-    {
-      title: "Secure Shipping",
-      description: "Enhanced security measures for high-value and sensitive shipments requiring special handling.",
-      icon: "Shield"
-    },
-    {
-      title: "International Logistics",
-      description: "Comprehensive international shipping with customs clearance and documentation assistance.",
-      icon: "Globe"
-    }
-  ];
-
   return (
     <Layout>
       <div className="container mx-auto py-12 px-4">
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold tracking-tight mb-4">Our Services</h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Cargocept offers comprehensive logistics solutions tailored to your specific shipping needs.
+              Comprehensive shipping solutions tailored to your specific needs
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
-            {!isLoading && serviceDetails && serviceDetails.map((service) => (
-              <Card key={service.id} className="overflow-hidden">
-                <CardContent className="p-0">
-                  <div className="p-6">
-                    <div className="text-primary mb-4">
-                      {renderIcon(service.icon)}
-                    </div>
-                    <h3 className="text-2xl font-semibold mb-2">{service.title}</h3>
-                    <p className="text-muted-foreground mb-6">
-                      {service.description}
-                    </p>
-                    <Button variant="outline" asChild>
-                      <Link to="/contact" className="flex items-center">
-                        Learn More <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-
-            {isLoading && Array(4).fill(0).map((_, i) => (
-              <Card key={i} className="overflow-hidden">
-                <CardContent className="p-6">
-                  <div className="h-10 w-10 bg-primary/20 rounded mb-4 animate-pulse" />
-                  <div className="h-8 bg-muted rounded w-3/4 mb-2 animate-pulse" />
-                  <div className="h-20 bg-muted rounded w-full mb-6 animate-pulse" />
-                  <div className="h-10 bg-muted rounded w-1/3 animate-pulse" />
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-
-          <h2 className="text-3xl font-bold tracking-tight mb-8 text-center">Additional Logistics Solutions</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-            {additionalServices.map((service, index) => (
-              <Card key={index} className="overflow-hidden">
-                <CardContent className="p-6">
+          <div className="space-y-16">
+            {services.map((service, index) => (
+              <div key={index} className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div className="relative h-[500px]">
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                </div>
+                <div>
                   <div className="text-primary mb-4">
-                    {renderIcon(service.icon)}
+                    {service.icon}
                   </div>
-                  <h3 className="text-xl font-semibold mb-2">{service.title}</h3>
-                  <p className="text-muted-foreground">
+                  <h3 className="text-3xl font-bold mb-4">{service.title}</h3>
+                  <p className="text-lg font-medium text-primary mb-4">
                     {service.description}
                   </p>
-                </CardContent>
-              </Card>
+                  <p className="text-muted-foreground mb-6">
+                    {service.longDescription}
+                  </p>
+                  <Button variant="outline" asChild>
+                    <Link to="/contact" className="flex items-center">
+                      Learn More
+                    </Link>
+                  </Button>
+                </div>
+              </div>
             ))}
           </div>
 
-          <div className="bg-primary/5 rounded-lg p-8 text-center">
-            <h2 className="text-2xl font-bold mb-4">Looking for Custom Logistics Solutions?</h2>
-            <p className="text-lg mb-6 max-w-2xl mx-auto">
-              Our team of logistics experts can design a tailored shipping solution to meet your specific business requirements.
-            </p>
-            <Button size="lg" asChild>
-              <Link to="/contact">Request a Custom Quote</Link>
-            </Button>
+          <div className="bg-primary/5 rounded-lg p-8 mt-16">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+              <div>
+                <h2 className="text-2xl font-bold mb-6">Need a Custom Shipping Solution?</h2>
+                <p className="text-lg mb-6">
+                  Our team of logistics experts can design a tailored shipping solution to meet your specific business requirements.
+                </p>
+                <Button size="lg" asChild>
+                  <Link to="/contact">Request a Custom Quote</Link>
+                </Button>
+              </div>
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div>
+                    <h3 className="font-semibold mb-1">Address</h3>
+                    <p className="text-muted-foreground">
+                      80 Park End St<br />
+                      Broom Hill<br />
+                      BH21 0XW<br />
+                      United Kingdom
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-4">
+                  <div>
+                    <h3 className="font-semibold mb-1">Phone</h3>
+                    <p className="text-muted-foreground">+44 70 8897 8089</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
