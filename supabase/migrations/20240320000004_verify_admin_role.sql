@@ -5,11 +5,11 @@ SET raw_user_meta_data = jsonb_set(
   '{role}',
   '"admin"'
 )
-WHERE email = 'admin@cargocept.com';
+WHERE email = 'admin@cargocept.org';
 
 -- Update the profile role to admin
 UPDATE public.profiles
 SET role = 'admin'
 WHERE id IN (
-  SELECT id FROM auth.users WHERE email = 'admin@cargocept.com'
+  SELECT id FROM auth.users WHERE email = 'admin@cargocept.org'
 ); 

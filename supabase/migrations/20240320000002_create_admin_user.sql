@@ -8,7 +8,7 @@ BEGIN
   -- Check if user already exists
   SELECT id INTO existing_user_id
   FROM auth.users
-  WHERE email = 'admin@cargocept.com';
+  WHERE email = 'admin@cargocept.org';
 
   IF existing_user_id IS NULL THEN
     -- Create new user
@@ -35,7 +35,7 @@ BEGIN
       gen_random_uuid(),
       'authenticated',
       'authenticated',
-      'admin@cargocept.com',
+      'admin@cargocept.org',
       crypt('admin123', gen_salt('bf')),
       now(),
       now(),

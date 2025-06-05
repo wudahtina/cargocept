@@ -15,10 +15,28 @@ export const getShipmentByTrackingId = async (trackingId: string): Promise<Shipm
 
     if (shipmentError) {
       console.error("Error fetching shipment:", shipmentError);
+      if (shipmentError.code === 'PGRST116') {
+        toast({
+          title: "Shipment not found",
+          description: "No shipment found with the provided tracking ID.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "An error occurred while fetching the shipment details.",
+          variant: "destructive"
+        });
+      }
       return null;
     }
 
     if (!shipmentData) {
+      toast({
+        title: "Shipment not found",
+        description: "No shipment found with the provided tracking ID.",
+        variant: "destructive"
+      });
       return null;
     }
 
@@ -31,6 +49,11 @@ export const getShipmentByTrackingId = async (trackingId: string): Promise<Shipm
 
     if (timelineError) {
       console.error("Error fetching timeline events:", timelineError);
+      toast({
+        title: "Warning",
+        description: "Could not fetch shipment timeline events.",
+        variant: "destructive"
+      });
     }
 
     // Transform the data into our application model

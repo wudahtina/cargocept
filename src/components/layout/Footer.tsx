@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Package } from 'lucide-react';
@@ -58,7 +57,7 @@ const Footer = () => {
           <address className="not-italic text-muted-foreground space-y-2">
             <p>123 Logistics Way</p>
             <p>Shipping City, SC 28412</p>
-            <p>Email: info@cargocept.com</p>
+            <p>Email: info@cargocept.org</p>
             <p>Phone: (555) 123-4567</p>
           </address>
         </div>

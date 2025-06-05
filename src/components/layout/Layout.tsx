@@ -164,7 +164,7 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
                 <li>BH21 0XW</li>
                 <li>United Kingdom</li>
                 <li>Phone: +44 70 8897 8089</li>
-                <li>Email: info@cargocept.com</li>
+                <li>Email: info@cargocept.org</li>
               </ul>
             </div>
             <div>
