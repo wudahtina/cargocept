@@ -326,3 +326,69 @@ export const createShipment = async (shipmentData: Partial<Shipment>): Promise<S
     return null;
   }
 };
+
+export const updateShipmentStatus = async (
+  shipmentId: string,
+  newStatus: ShipmentStatus,
+  location?: string
+): Promise<boolean> => {
+  try {
+    const now = new Date().toISOString();
+    
+    // Update shipment status
+    const { error: shipmentError } = await supabase
+      .from('shipments')
+      .update({ 
+        status: newStatus,
+        updated_at: now
+      })
+      .eq('id', shipmentId);
+
+    if (shipmentError) {
+      throw shipmentError;
+    }
+
+    // Create timeline event
+    const { error: timelineError } = await supabase
+      .from('timeline_events')
+      .insert([
+        {
+          shipment_id: shipmentId,
+          timestamp: now,
+          description: getStatusDescription(newStatus),
+          status: newStatus,
+          location: location || 'Unknown location'
+        }
+      ]);
+
+    if (timelineError) {
+      throw timelineError;
+    }
+
+    return true;
+  } catch (error) {
+    console.error("Error updating shipment status:", error);
+    return false;
+  }
+};
+
+const getStatusDescription = (status: ShipmentStatus): string => {
+  switch (status) {
+    case 'Pending':
+      return 'Shipment created and pending processing';
+    case 'In Transit':
+      return 'Shipment is in transit';
+    case 'Courier Heading to Cargo':
+      return 'Courier is heading to cargo facility';
+    case 'Hold':
+      return 'Shipment is on hold for custom verification';
+    case 'Delivered':
+      return 'Shipment has been delivered';
+    case 'Failed':
+      return 'Shipment delivery failed';
+    case 'Cancelled':
+      return 'Shipment has been cancelled';
+    default:
+      return 'Status updated';
+  }
+};

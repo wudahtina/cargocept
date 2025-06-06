@@ -7,6 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/components/ui/use-toast';
 import { format } from 'date-fns';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { CalendarIcon } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 const AdminDashboard = () => {
   const { toast } = useToast();
@@ -72,6 +76,34 @@ const AdminDashboard = () => {
     }
   });
 
+  const updateDeliveryDateMutation = useMutation({
+    mutationFn: async ({ shipmentId, newDate }: { shipmentId: string; newDate: Date }) => {
+      const { error } = await supabase
+        .from('shipments')
+        .update({ 
+          expected_delivery_date: newDate.toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', shipmentId);
+
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['all-shipments'] });
+      toast({
+        title: "Delivery date updated",
+        description: "The expected delivery date has been updated successfully.",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error updating delivery date",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  });
+
   const handleStatusUpdate = (shipmentId: string, newStatus: string) => {
     let location = '';
     switch (newStatus) {
@@ -118,8 +150,44 @@ const AdminDashboard = () => {
                       <p className="text-sm text-muted-foreground">
                         Current Status: {shipment.status}
                       </p>
+                      <p className="text-sm text-muted-foreground">
+                        Expected Delivery: {format(new Date(shipment.expected_delivery_date), 'MMM dd, yyyy')}
+                      </p>
                     </div>
                     <div className="flex items-center gap-4">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            className={cn(
+                              "w-[200px] justify-start text-left font-normal",
+                              !shipment.expected_delivery_date && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4" />
+                            {shipment.expected_delivery_date ? (
+                              format(new Date(shipment.expected_delivery_date), 'PPP')
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={new Date(shipment.expected_delivery_date)}
+                            onSelect={(date) => {
+                              if (date) {
+                                updateDeliveryDateMutation.mutate({
+                                  shipmentId: shipment.id,
+                                  newDate: date
+                                });
+                              }
+                            }}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
                       <Select
                         onValueChange={(value) => handleStatusUpdate(shipment.id, value)}
                         defaultValue={shipment.status}
@@ -129,9 +197,15 @@ const AdminDashboard = () => {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="Pending">Pending</SelectItem>
+                          <SelectItem value="Accepted">Accepted</SelectItem>
+                          <SelectItem value="Processing">Processing</SelectItem>
                           <SelectItem value="In Transit">In Transit</SelectItem>
-                          <SelectItem value="Courier Heading for Cargo">Courier Heading for Cargo</SelectItem>
+                          <SelectItem value="Courier Heading to Cargo">Courier Heading to Cargo</SelectItem>
+                          <SelectItem value="Hold">Hold (Custom Verification)</SelectItem>
+                          <SelectItem value="Out for Delivery">Out for Delivery</SelectItem>
                           <SelectItem value="Delivered">Delivered</SelectItem>
+                          <SelectItem value="Failed">Failed</SelectItem>
+                          <SelectItem value="Cancelled">Cancelled</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>

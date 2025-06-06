@@ -8,7 +8,9 @@ export type ShipmentStatus =
   | 'Out for Delivery'
   | 'Delivered' 
   | 'Failed' 
-  | 'Cancelled';
+  | 'Cancelled'
+  | 'Courier Heading to Cargo'
+  | 'Hold';
 
 export interface Address {
   street: string;
